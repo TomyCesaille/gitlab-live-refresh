@@ -383,10 +383,28 @@ describe('startContentScript elsewhere on GitLab', () => {
     ) as string[];
     expect(trace.map((entry) => entry.split(' ').slice(2).join(' '))).toEqual([
       `v load ${MR_PAGE}: opened`,
+      'v check: pending pipeline',
       'v reload waits: unsent text on the page',
       'v reload waits: you are active',
       'v reload: changed: pipeline',
     ]);
+  });
+
+  it('traces checks that found nothing, and failed ones', async () => {
+    const { page, start, answer } = setup();
+    page.local.setItem('gl-live-refresh:debug', '1');
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    await start();
+    await advance(1_500);
+    answer({ failed: true });
+    await advance(15_000);
+
+    const trace = JSON.parse(
+      page.local.getItem('gl-live-refresh:trace') ?? '[]',
+    ) as string[];
+    expect(
+      trace.slice(-2).map((entry) => entry.split(' ').slice(3).join(' ')),
+    ).toEqual(['check: same', 'check: failed']);
   });
 
   it('saves where you are as you scroll', async () => {

@@ -122,6 +122,10 @@ export async function startContentScript(
   async function ask(arriving: boolean): Promise<CheckReply> {
     const answer = (await send({ type: 'check', arriving })) as CheckReply;
     failures = answer.failed ? failures + 1 : 0;
+    const pending = answer.changed.length
+      ? `pending ${answer.changed.join(',')}`
+      : 'same';
+    log(`check: ${answer.failed ? 'failed' : pending}`);
     return answer;
   }
 
