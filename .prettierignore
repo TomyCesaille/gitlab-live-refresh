@@ -1,0 +1,9 @@
+.output/
+.wxt/
+dist/
+coverage/
+node_modules/
+docs/
+legacy/
+package-lock.json
+CHANGELOG.md

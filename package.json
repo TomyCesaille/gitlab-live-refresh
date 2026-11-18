@@ -1,0 +1,62 @@
+{
+  "name": "gitlab-live-refresh",
+  "version": "2.0.0",
+  "private": true,
+  "description": "GitLab merge request, pipeline and job pages that reload themselves when something changes, never while you type. A browser extension for Chrome and Firefox, and a userscript.",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "npm run build:chrome && npm run build:firefox && npm run build:userscript",
+    "build:chrome": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "build:userscript": "node scripts/build-userscript.ts",
+    "zip": "wxt zip && wxt zip -b firefox",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "postinstall": "wxt prepare",
+    "prepare": "husky || true"
+  },
+  "lint-staged": {
+    "*.{ts,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css,html}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "^5.1.1",
+    "@wxt-dev/auto-icons": "^1.1.2",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.14.0",
+    "husky": "^9.1.7",
+    "jsdom": "^31.0.1",
+    "lint-staged": "^17.6.1",
+    "prettier": "^3.10.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.73.0",
+    "vitest": "^5.1.1",
+    "wxt": "^0.21.5"
+  },
+  "author": "Joris La Cancellera",
+  "license": "MIT",
+  "homepage": "https://tomycesaille.github.io/gitlab-live-refresh/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TomyCesaille/gitlab-live-refresh.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TomyCesaille/gitlab-live-refresh/issues"
+  }
+}
