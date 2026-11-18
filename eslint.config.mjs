@@ -13,7 +13,6 @@ export default defineConfig(
       'coverage/',
       'node_modules/',
       'docs/',
-      'legacy/',
     ],
   },
   eslint.configs.recommended,

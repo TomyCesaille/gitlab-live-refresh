@@ -30,7 +30,7 @@ function setup({
     session,
     url: () => url,
     banner,
-    blocker: () => blocker,
+    blocker: (arriving: boolean) => (arriving ? null : blocker),
     answers: () => Promise.resolve(up),
     reload,
     limit: 3,
@@ -57,21 +57,21 @@ describe('createErrorWatch', () => {
   it('stays out of the way while the page shows no error', async () => {
     const { watch, banner } = setup();
 
-    await expect(watch.check()).resolves.toBe('clear');
+    await expect(watch.check(false)).resolves.toBe('clear');
     expect(banner.hide).not.toHaveBeenCalled();
   });
 
   it('takes its error banner down once the error is gone', async () => {
     const { watch, banner } = setup({ mode: 'errorOffline' });
 
-    await expect(watch.check()).resolves.toBe('clear');
+    await expect(watch.check(false)).resolves.toBe('clear');
     expect(banner.hide).toHaveBeenCalled();
   });
 
   it('leaves an update banner up', async () => {
     const { watch, banner } = setup({ mode: 'updates' });
 
-    await watch.check();
+    await watch.check(false);
     expect(banner.hide).not.toHaveBeenCalled();
   });
 
@@ -79,7 +79,7 @@ describe('createErrorWatch', () => {
     showAlert();
     const { watch, reload, session } = setup();
 
-    await expect(watch.check()).resolves.toBe('owned');
+    await expect(watch.check(false)).resolves.toBe('owned');
     expect(reload).toHaveBeenCalledWith('error alert');
     expect(errorReloadsSpent(session, url)).toBe(1);
   });
@@ -88,18 +88,26 @@ describe('createErrorWatch', () => {
     showAlert();
     const { watch, banner, reload } = setup({ blocker: 'typing' });
 
-    await expect(watch.check()).resolves.toBe('waiting');
+    await expect(watch.check(false)).resolves.toBe('waiting');
     expect(banner.show).toHaveBeenCalledWith('error', {
       why: 'you are typing',
     });
     expect(reload).not.toHaveBeenCalled();
   });
 
+  it('reloads on arrival even while you would otherwise hold it', async () => {
+    showAlert();
+    const { watch, reload } = setup({ blocker: 'active' });
+
+    await expect(watch.check(true)).resolves.toBe('owned');
+    expect(reload).toHaveBeenCalledWith('error alert');
+  });
+
   it('waits for GitLab to answer before reloading', async () => {
     showAlert();
     const { watch, banner, reload } = setup({ up: false });
 
-    await expect(watch.check()).resolves.toBe('owned');
+    await expect(watch.check(false)).resolves.toBe('owned');
     expect(banner.show).toHaveBeenCalledWith('errorOffline');
     expect(reload).not.toHaveBeenCalled();
   });
@@ -109,7 +117,7 @@ describe('createErrorWatch', () => {
     const { watch, banner, reload, session } = setup();
     for (let i = 0; i < 3; i += 1) spendErrorReload(session, url);
 
-    await expect(watch.check()).resolves.toBe('owned');
+    await expect(watch.check(false)).resolves.toBe('owned');
     expect(banner.show).toHaveBeenCalledWith('errorStuck');
     expect(reload).not.toHaveBeenCalled();
   });
@@ -119,10 +127,10 @@ describe('createErrorWatch', () => {
     const { watch, reload } = setup();
 
     watch.dismiss();
-    await expect(watch.check()).resolves.toBe('clear');
+    await expect(watch.check(false)).resolves.toBe('clear');
 
     showAlert();
-    await expect(watch.check()).resolves.toBe('owned');
+    await expect(watch.check(false)).resolves.toBe('owned');
     expect(reload).toHaveBeenCalledOnce();
   });
 });

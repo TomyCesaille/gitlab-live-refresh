@@ -11,7 +11,12 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts', 'scripts/**/*.ts'],
-      exclude: ['**/*.test.ts', '**/*.d.ts'],
+      exclude: [
+        '**/*.test.ts',
+        '**/*.d.ts',
+        // the CLI wrapper around the tested buildUserscript()
+        'scripts/build-userscript.ts',
+      ],
       thresholds: { 100: true },
     },
   },

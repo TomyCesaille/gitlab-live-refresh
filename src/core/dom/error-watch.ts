@@ -23,14 +23,14 @@ export interface ErrorWatchOptions {
   session: KeyValueStore;
   url: () => string;
   banner: Banner;
-  blocker: () => Blocker | null;
+  blocker: (arriving: boolean) => Blocker | null;
   answers: () => Promise<boolean>;
   reload: (reason: string) => void;
   limit: number;
 }
 
 export interface ErrorWatch {
-  check(): Promise<ErrorCheck>;
+  check(arriving: boolean): Promise<ErrorCheck>;
   dismiss(): void;
 }
 
@@ -40,7 +40,7 @@ export function createErrorWatch(options: ErrorWatchOptions): ErrorWatch {
   let dismissed: Element | null = null;
 
   return {
-    async check() {
+    async check(arriving) {
       const alert = findErrorAlert(options.doc);
       if (!alert || alert === dismissed) {
         if (options.banner.mode?.startsWith('error')) options.banner.hide();
@@ -51,7 +51,7 @@ export function createErrorWatch(options: ErrorWatchOptions): ErrorWatch {
         options.banner.show('errorStuck');
         return 'owned';
       }
-      const why = options.blocker();
+      const why = options.blocker(arriving);
       if (why) {
         options.banner.show('error', { why: BLOCKER_TEXT[why] });
         return 'waiting';
