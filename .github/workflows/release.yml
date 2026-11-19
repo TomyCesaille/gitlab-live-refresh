@@ -14,6 +14,9 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      # true once the repository holds an addons.mozilla.org API key
+      AMO_KEY_SET: ${{ secrets.FIREFOX_JWT_ISSUER != '' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -45,3 +48,18 @@ jobs:
             --latest \
             .output/*.zip \
             dist/gitlab-live-refresh.user.js
+      - name: Submit the Firefox build to Firefox Add-ons for review
+        if: env.AMO_KEY_SET == 'true'
+        env:
+          FIREFOX_EXTENSION_ID: gitlab-live-refresh@tomycesaille.github.io
+          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          jq -n --rawfile notes notes.md --rawfile review .github/amo-reviewer-notes.md \
+            '{version: {release_notes: {"en-US": $notes}, approval_notes: $review}}' > amo.json
+          npx wxt submit \
+            --firefox-zip ".output/gitlab-live-refresh-$version-firefox.zip" \
+            --firefox-sources-zip ".output/gitlab-live-refresh-$version-sources.zip" \
+            --firefox-amo-metadata-file amo.json \
+            --firefox-compatibility firefox

@@ -6,8 +6,16 @@ export default defineConfig({
   imports: false,
   modules: ['@wxt-dev/auto-icons'],
   autoIcons: { baseIconPath: 'assets/icon.svg' },
+  // The sources zip is what Firefox Add-ons reviewers rebuild the add-on from.
   zip: {
-    excludeSources: ['docs/**', '.github/**', 'coverage/**', '.vitest/**'],
+    includeSources: ['**/*', '.nvmrc'],
+    excludeSources: [
+      'docs/**',
+      '.github/**',
+      'coverage/**',
+      '.vitest/**',
+      'dist/**',
+    ],
   },
   manifest: ({ browser }) => ({
     name: 'GitLab Live Refresh',
@@ -20,6 +28,8 @@ export default defineConfig({
       browser_specific_settings: {
         gecko: {
           id: 'gitlab-live-refresh@tomycesaille.github.io',
+          // the first Firefox that reads data_collection_permissions, an ESR
+          strict_min_version: '140.0',
           data_collection_permissions: { required: ['none'] },
         },
       },

@@ -45,15 +45,18 @@ what changed and reloads the page for you, at a moment that costs you nothing.
 
 ## Install the extension
 
-Download the Chrome or Firefox build from the
-[latest release](https://github.com/TomyCesaille/gitlab-live-refresh/releases/latest).
-In Chrome, unzip it, open `chrome://extensions`, turn on Developer mode and
-choose Load unpacked. The Chrome Web Store and Firefox Add-ons listings are on
-the way.
+- **Firefox:** add it from
+  [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/gitlab-live-refresh/).
+  Firefox keeps it up to date.
+- **Chrome:** download the Chrome build from the
+  [latest release](https://github.com/TomyCesaille/gitlab-live-refresh/releases/latest),
+  unzip it, open `chrome://extensions`, turn on Developer mode and choose Load
+  unpacked.
 
 Then open a GitLab page, click the extension's icon and turn live refresh on for
-that site. It asks for that one site's permission, nothing more, and works the
-same on gitlab.com and on a self-hosted instance.
+that site. It asks for that one site's permission, nothing more, starts in that
+site's open tabs at once, and works the same on gitlab.com and on a self-hosted
+instance.
 
 ## Or the userscript
 

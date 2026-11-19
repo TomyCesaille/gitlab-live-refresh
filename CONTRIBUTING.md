@@ -35,8 +35,11 @@ npm run dev          # Chrome, with hot reload
 npm run dev:firefox
 ```
 
-Or load `.output/chrome-mv3` unpacked in `chrome://extensions`, then turn live
-refresh on for a GitLab site from the extension's icon. The userscript builds to
+Or load `.output/chrome-mv3` unpacked in `chrome://extensions`. In Firefox,
+open `about:debugging#/runtime/this-firefox`, choose Load Temporary Add-on and
+pick `.output/firefox-mv3/manifest.json`, or a release's Firefox zip; Firefox
+drops it at the next restart. Then turn live refresh on for a GitLab site from
+the extension's icon. The userscript builds to
 `dist/gitlab-live-refresh.user.js`; serve the folder
 (`python3 -m http.server -d dist`) and open the file's URL to install it in
 Violentmonkey.
@@ -77,3 +80,10 @@ Open Graph card and the touch icon. It needs Google Chrome.
    Firefox sources zip and the userscript, and publishes a GitHub release with
    them. The userscript's `@updateURL` points at the latest release, so
    installed copies update themselves.
+4. It then submits the Firefox zip and its sources to
+   [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/gitlab-live-refresh/)
+   for review, with the changelog section as release notes and
+   [`.github/amo-reviewer-notes.md`](.github/amo-reviewer-notes.md) for the
+   reviewer. It needs the repository secrets `FIREFOX_JWT_ISSUER` and
+   `FIREFOX_JWT_SECRET`, an addons.mozilla.org API key; without them the step
+   is skipped.
