@@ -5,7 +5,7 @@ on:
     tags: ['v*']
 
 permissions:
-  contents: write # publish the release and its files
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -14,10 +14,20 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-      # true once the repository holds an addons.mozilla.org API key
-      AMO_KEY_SET: ${{ secrets.FIREFOX_JWT_ISSUER != '' }}
+    permissions:
+      contents: write # publish the release and its files
+    outputs:
+      firefox: ${{ steps.keys.outputs.firefox }}
+      chrome: ${{ steps.keys.outputs.chrome }}
     steps:
+      - id: keys
+        name: Note which store keys the repository holds
+        env:
+          FIREFOX: ${{ secrets.FIREFOX_JWT_ISSUER != '' }}
+          CHROME: ${{ secrets.CHROME_SERVICE_ACCOUNT_PRIVATE_KEY != '' && vars.CHROME_PUBLISHER_ID != '' }}
+        run: |
+          echo "firefox=$FIREFOX" >> "$GITHUB_OUTPUT"
+          echo "chrome=$CHROME" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -48,18 +58,66 @@ jobs:
             --latest \
             .output/*.zip \
             dist/gitlab-live-refresh.user.js
-      - name: Submit the Firefox build to Firefox Add-ons for review
-        if: env.AMO_KEY_SET == 'true'
+
+  # Each store submits the files of the published release, in its own job, once
+  # the repository holds its key: one store failing leaves the other, and its
+  # job can be re-run alone.
+  firefox:
+    needs: release
+    if: needs.release.outputs.firefox == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Download the release's Firefox zip and sources
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$GITHUB_REF_NAME" -R "$GITHUB_REPOSITORY" -D release \
+            -p '*-firefox.zip' -p '*-sources.zip'
+          gh release view "$GITHUB_REF_NAME" -R "$GITHUB_REPOSITORY" --json body --jq .body > notes.md
+      - name: Submit them to Firefox Add-ons for review
         env:
           FIREFOX_EXTENSION_ID: gitlab-live-refresh@tomycesaille.github.io
           FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
           FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
         run: |
-          version="${GITHUB_REF_NAME#v}"
           jq -n --rawfile notes notes.md --rawfile review .github/amo-reviewer-notes.md \
             '{version: {release_notes: {"en-US": $notes}, approval_notes: $review}}' > amo.json
           npx wxt submit \
-            --firefox-zip ".output/gitlab-live-refresh-$version-firefox.zip" \
-            --firefox-sources-zip ".output/gitlab-live-refresh-$version-sources.zip" \
+            --firefox-zip release/*-firefox.zip \
+            --firefox-sources-zip release/*-sources.zip \
             --firefox-amo-metadata-file amo.json \
             --firefox-compatibility firefox
+
+  chrome:
+    needs: release
+    if: needs.release.outputs.chrome == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Download the release's Chrome zip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download "$GITHUB_REF_NAME" -R "$GITHUB_REPOSITORY" -D release -p '*-chrome.zip'
+      - name: Submit it to the Chrome Web Store for review
+        env:
+          CHROME_API_VERSION: v2
+          CHROME_EXTENSION_ID: ndpjfblhcicehheklmjedjmmpfongaed
+          CHROME_PUBLISHER_ID: ${{ vars.CHROME_PUBLISHER_ID }}
+          CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          CHROME_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.CHROME_SERVICE_ACCOUNT_PRIVATE_KEY }}
+        run: npx wxt submit --chrome-zip release/*-chrome.zip

@@ -1,7 +1,7 @@
 name: Store check
 
-# Proves the addons.mozilla.org API key works before a release needs it: signs
-# in and reads the add-on, without uploading or submitting anything.
+# Proves the store keys work before a release needs them: each job signs in and
+# reads the extension's store entry, without uploading or submitting anything.
 on:
   workflow_dispatch:
 
@@ -32,3 +32,26 @@ jobs:
           npx wxt submit --dry-run \
             --firefox-zip .output/*-firefox.zip \
             --firefox-sources-zip .output/*-sources.zip
+
+  chrome:
+    name: Chrome Web Store
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Zip the Chrome build
+        run: npx wxt zip
+      - name: Sign in to the Chrome Web Store and read the item, as a dry run
+        env:
+          CHROME_API_VERSION: v2
+          CHROME_EXTENSION_ID: ndpjfblhcicehheklmjedjmmpfongaed
+          CHROME_PUBLISHER_ID: ${{ vars.CHROME_PUBLISHER_ID }}
+          CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          CHROME_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.CHROME_SERVICE_ACCOUNT_PRIVATE_KEY }}
+        run: npx wxt submit --dry-run --chrome-zip .output/*-chrome.zip

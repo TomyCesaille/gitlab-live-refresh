@@ -81,15 +81,18 @@ Open Graph card and the touch icon, plus the Firefox Add-ons screenshots in
    Firefox sources zip and the userscript, and publishes a GitHub release with
    them. The userscript's `@updateURL` points at the latest release, so
    installed copies update themselves.
-4. It then submits the Firefox zip and its sources to
-   [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/gitlab-live-refresh/)
-   for review, with the changelog section as release notes and
-   [`.github/amo-reviewer-notes.md`](.github/amo-reviewer-notes.md) for the
-   reviewer. It needs the repository secrets `FIREFOX_JWT_ISSUER` and
-   `FIREFOX_JWT_SECRET`, an addons.mozilla.org API key; without them the step
-   is skipped. The manual Store check workflow tests the key without a release:
-   it signs in and reads the add-on, and uploads nothing.
-5. Upload the release's Chrome zip to the
-   [Chrome Web Store](https://chromewebstore.google.com/detail/gitlab-live-refresh/ndpjfblhcicehheklmjedjmmpfongaed)
-   from its developer dashboard: Package, Upload new package, then Submit for
-   review.
+4. Two more jobs then submit the release's files for review, each once the
+   repository holds its store key, and each re-runnable alone:
+   - [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/gitlab-live-refresh/):
+     the Firefox zip and its sources, with the changelog section as release
+     notes and [`.github/amo-reviewer-notes.md`](.github/amo-reviewer-notes.md)
+     for the reviewer. Secrets `FIREFOX_JWT_ISSUER` and `FIREFOX_JWT_SECRET`, an
+     addons.mozilla.org API key.
+   - [Chrome Web Store](https://chromewebstore.google.com/detail/gitlab-live-refresh/ndpjfblhcicehheklmjedjmmpfongaed):
+     the Chrome zip. Secrets `CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL` and
+     `CHROME_SERVICE_ACCOUNT_PRIVATE_KEY`, a Google Cloud service account added
+     to the publisher in the Chrome Web Store dashboard, and the variable
+     `CHROME_PUBLISHER_ID`.
+
+   The manual Store check workflow tests both keys without a release: it signs
+   in to each store and reads the extension's entry, and uploads nothing.
