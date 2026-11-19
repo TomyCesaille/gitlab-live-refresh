@@ -1,0 +1,34 @@
+name: Store check
+
+# Proves the addons.mozilla.org API key works before a release needs it: signs
+# in and reads the add-on, without uploading or submitting anything.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  firefox:
+    name: Firefox Add-ons
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Zip the Firefox build and its sources
+        run: npx wxt zip -b firefox
+      - name: Sign in to Firefox Add-ons and read the add-on, as a dry run
+        env:
+          FIREFOX_EXTENSION_ID: gitlab-live-refresh@tomycesaille.github.io
+          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
+        run: |
+          npx wxt submit --dry-run \
+            --firefox-zip .output/*-firefox.zip \
+            --firefox-sources-zip .output/*-sources.zip

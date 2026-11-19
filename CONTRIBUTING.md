@@ -87,4 +87,5 @@ Open Graph card and the touch icon, plus the Firefox Add-ons screenshots in
    [`.github/amo-reviewer-notes.md`](.github/amo-reviewer-notes.md) for the
    reviewer. It needs the repository secrets `FIREFOX_JWT_ISSUER` and
    `FIREFOX_JWT_SECRET`, an addons.mozilla.org API key; without them the step
-   is skipped.
+   is skipped. The manual Store check workflow tests the key without a release:
+   it signs in and reads the add-on, and uploads nothing.
