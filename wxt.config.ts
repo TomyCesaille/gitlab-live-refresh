@@ -6,7 +6,9 @@ export default defineConfig({
   imports: false,
   modules: ['@wxt-dev/auto-icons'],
   autoIcons: { baseIconPath: 'assets/icon.svg' },
-  zip: { excludeSources: ['docs/**', '.github/**', 'coverage/**'] },
+  zip: {
+    excludeSources: ['docs/**', '.github/**', 'coverage/**', '.vitest/**'],
+  },
   manifest: ({ browser }) => ({
     name: 'GitLab Live Refresh',
     description:
