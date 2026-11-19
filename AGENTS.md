@@ -54,8 +54,11 @@ userscript bundled with esbuild.
 
 ## Testing
 
-- vitest on jsdom, 100% line, branch, function and statement coverage, enforced
-  by `vitest.config.ts` and CI. The one exclusion is `scripts/build-userscript.ts`,
+- Vitest in two projects: `unit` on jsdom, and `browser` in headless Chromium
+  (Playwright) for `*.browser.test.ts`, which check layout: where the banner
+  sits and that it stays inside GitLab's top bar. Coverage counts both: 100%
+  line, branch, function and statement coverage, enforced by `vitest.config.ts`
+  and CI. The one exclusion is `scripts/build-userscript.ts`,
   the CLI wrapper around the tested `buildUserscript()`.
 - Logic takes its world as arguments: a window, a `send` function, a session
   storage area, a `fetch`. Tests pass fakes from `test/` rather than mocking
@@ -63,7 +66,8 @@ userscript bundled with esbuild.
 - Timers are faked (`vi.useFakeTimers`); drive them with
   `vi.advanceTimersByTimeAsync`.
 - jsdom lays nothing out: `test/dom.ts` gives an element a size, and
-  `vitest.setup.ts` supplies `checkVisibility`.
+  `vitest.setup.ts` supplies `checkVisibility`. A rule about real sizes or
+  positions gets a browser test instead.
 - Name tests after what the user sees.
 
 ## Conventions
@@ -83,6 +87,7 @@ userscript bundled with esbuild.
 | esbuild | ^0.28 | Bundles the userscript to one IIFE behind its metadata block. |
 | TypeScript | ~6.0 | Stay on 6.0: typescript-eslint caps its peer range below 6.1, and TypeScript 7 (the native compiler) only ships an unstable API. |
 | Vitest, @vitest/coverage-v8, jsdom | ^5, ^5, ^31 | Native ESM and TypeScript, fake timers, V8 coverage. |
+| @vitest/browser-playwright, Playwright | ^5, ^1.65 | Vitest's browser mode: layout tests in headless Chromium, in the same coverage. |
 | ESLint, typescript-eslint, eslint-config-prettier | ^10, ^8.73, ^10 | Flat config through `defineConfig`. |
 | Prettier, Husky, lint-staged | ^3, ^9, ^17 | Formatting, and a pre-commit hook on staged files. |
 | Astro | ^7.4 (docs) | Static website on GitHub Pages, deployed by `withastro/action`. |

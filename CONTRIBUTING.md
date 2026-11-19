@@ -11,12 +11,13 @@ Node 22.18 or later (`.nvmrc` pins the version CI uses).
 git clone https://github.com/TomyCesaille/gitlab-live-refresh
 cd gitlab-live-refresh
 npm install
+npx playwright install --only-shell chromium   # for the layout tests
 ```
 
 ## Check a change
 
 ```bash
-npm test             # vitest, with coverage
+npm test             # vitest on jsdom and in headless Chromium, with coverage
 npm run lint
 npm run typecheck
 npm run format:check

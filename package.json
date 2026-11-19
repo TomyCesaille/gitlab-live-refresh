@@ -34,6 +34,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.6",
+    "@vitest/browser-playwright": "^5.1.1",
     "@vitest/coverage-v8": "^5.1.1",
     "@wxt-dev/auto-icons": "^1.1.2",
     "esbuild": "^0.28.2",
@@ -43,6 +44,7 @@
     "husky": "^9.1.7",
     "jsdom": "^31.0.1",
     "lint-staged": "^17.6.1",
+    "playwright": "^1.65.1",
     "prettier": "^3.10.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.73.0",

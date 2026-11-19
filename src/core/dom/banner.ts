@@ -53,19 +53,20 @@ function content(mode: BannerMode, details: BannerDetails, limit: number) {
       return {
         theme: THEMES.error,
         title: 'GitLab error on this page',
-        detail: 'GitLab is not answering. Reloads once it is back.',
+        detail: 'Reloads once GitLab answers.',
       };
     case 'errorStuck':
       return {
         theme: THEMES.error,
-        title: 'GitLab keeps failing',
-        detail: `Auto-reload stopped after ${String(limit)} tries. Reload the page to re-arm it.`,
+        title: `Auto-reload stopped after ${String(limit)} tries`,
+        detail: 'GitLab keeps failing. Reload to retry.',
       };
   }
 }
 
-// Two lines fit inside GitLab's 48px top bar, over its right-hand counters and
-// avatar, so the banner never hides the page's own buttons.
+// Two lines, never wrapped, fit inside GitLab's 48px top bar, over its
+// right-hand counters and avatar: the banner never hides the page's own
+// buttons. A line too long ends in an ellipsis, and the bar's tooltip has it all.
 const STYLE = `
   .bar {
     position: fixed; top: 4px; right: 8px; z-index: 2147483647;
@@ -78,6 +79,7 @@ const STYLE = `
   .bar[hidden] { display: none; }
   .icon { font-size: 16px; }
   .text { flex: 1; min-width: 0; }
+  .title, .detail { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .title { font-weight: 600; }
   .detail { opacity: 0.85; font-size: 12px; }
   button { font: inherit; cursor: pointer; border: 0; }
@@ -156,6 +158,7 @@ export function createBanner(
       parts.icon.textContent = theme.icon;
       parts.title.textContent = title;
       parts.detail.textContent = detail;
+      parts.bar.title = `${title}\n${detail}`;
       parts.bar.hidden = false;
       mode = next;
     },

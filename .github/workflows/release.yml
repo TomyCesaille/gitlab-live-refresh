@@ -23,6 +23,8 @@ jobs:
           node-version-file: .nvmrc
           package-manager-cache: false # a release builds from a clean install
       - run: npm ci
+      - name: Headless Chromium for the layout tests
+        run: npx playwright install --with-deps --only-shell chromium
       - name: Tests, holding coverage at 100%
         run: npm test
       - name: Build the userscript and zip the extensions

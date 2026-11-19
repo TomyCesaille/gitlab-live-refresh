@@ -50,14 +50,20 @@ describe('createBanner', () => {
     expect(bar().style.getPropertyValue('--bg')).toBe('#e69f00');
 
     banner.show('errorOffline');
-    expect(text('.detail')).toBe(
-      'GitLab is not answering. Reloads once it is back.',
-    );
+    expect(text('.detail')).toBe('Reloads once GitLab answers.');
 
     banner.show('errorStuck');
-    expect(text('.title')).toBe('GitLab keeps failing');
-    expect(text('.detail')).toBe(
-      'Auto-reload stopped after 3 tries. Reload the page to re-arm it.',
+    expect(text('.title')).toBe('Auto-reload stopped after 3 tries');
+    expect(text('.detail')).toBe('GitLab keeps failing. Reload to retry.');
+  });
+
+  it('keeps the whole message in its tooltip, for a line cut short', () => {
+    const { banner, bar } = setup();
+
+    banner.show('updates', { changes: 'pipeline', why: 'you are typing' });
+
+    expect(bar().title).toBe(
+      'GitLab changed: pipeline\nReload waits: you are typing.',
     );
   });
 

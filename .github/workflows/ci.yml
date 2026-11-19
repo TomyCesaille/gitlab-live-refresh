@@ -25,6 +25,8 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - name: Headless Chromium for the layout tests
+        run: npx playwright install --with-deps --only-shell chromium
       - name: Lint
         run: npm run lint
       - name: Type check
