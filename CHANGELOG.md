@@ -20,6 +20,8 @@ gitlab-live-refresh's user-facing changes, newest first. The format follows
 
 ### Changed
 
+- The banner sits in the top right corner, inside GitLab's top bar, clear of
+  the page's own buttons.
 - The userscript runs on the merge request, pipeline and job pages of any
   GitLab host, with no setup, and updates itself from the latest release.
 - The userscript and the extension share one TypeScript core, tested at 100%.

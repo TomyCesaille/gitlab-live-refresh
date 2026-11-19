@@ -49,22 +49,25 @@ function screenshot(html: string, width: number, height: number, out: string) {
   });
 }
 
-// An abstract page behind the banner: no GitLab screen, no real data.
+// An abstract page behind the banner, top bar included: no GitLab screen, no
+// real data.
 const backdrop = `
   <style>
     body { margin: 0; background: #f5f5f5; font: 13px system-ui; }
+    .bar { height: 48px; background: #e8e8e8; border-bottom: 1px solid #d6d6d6; }
+    .search { width: 34%; height: 28px; margin: 10px 18px; border-radius: 14px; background: #fff; }
     .row { height: 10px; margin: 14px 18px; border-radius: 5px; background: #dedede; }
     .row.short { width: 40%; } .row.mid { width: 65%; }
   </style>
-  <div class="row mid"></div><div class="row"></div><div class="row short"></div>
-  <div class="row"></div><div class="row mid"></div><div class="row short"></div>`;
+  <div class="bar"><div class="search"></div></div>
+  <div class="row mid"></div><div class="row"></div><div class="row short"></div>`;
 
 const bannerShot = async (mode: string, details: object, out: string) => {
   await screenshot(
     `<!doctype html><meta charset="utf-8">${backdrop}
      <script>${showBanner}; showBanner(${JSON.stringify(mode)}, ${JSON.stringify(details)});</script>`,
     560,
-    150,
+    120,
     out,
   );
 };
@@ -80,7 +83,7 @@ await bannerShot('error', { why: 'text is selected' }, error);
 const [top, bottom] = await Promise.all(
   [update, error].map((file) => sharp(file).toBuffer()),
 );
-const { width = 1120, height = 300 } = await sharp(top).metadata();
+const { width = 1120, height = 240 } = await sharp(top).metadata();
 await sharp({
   create: { width, height: height * 2, channels: 4, background: '#f5f5f5' },
 })

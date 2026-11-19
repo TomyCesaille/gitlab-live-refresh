@@ -14,7 +14,7 @@ Chrome and Firefox, and a userscript.
 [![license](https://img.shields.io/github/license/TomyCesaille/gitlab-live-refresh)](https://github.com/TomyCesaille/gitlab-live-refresh/blob/main/LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/TomyCesaille/gitlab-live-refresh/ci.yml?branch=main)](https://github.com/TomyCesaille/gitlab-live-refresh/actions/workflows/ci.yml)
 
-![Two banners in a page's bottom right corner. Blue: GitLab changed: pipeline, comments. Reload waits: you are typing. Orange: GitLab error on this page. Reload waits: text is selected.](docs/public/banner.png)
+![Two banners in a page's top right corner. Blue: GitLab changed: pipeline, comments. Reload waits: you are typing. Orange: GitLab error on this page. Reload waits: text is selected.](docs/public/banner.png)
 
 [Website](https://tomycesaille.github.io/gitlab-live-refresh/) | [Latest release](https://github.com/TomyCesaille/gitlab-live-refresh/releases/latest)
 

@@ -64,21 +64,24 @@ function content(mode: BannerMode, details: BannerDetails, limit: number) {
   }
 }
 
+// Two lines fit inside GitLab's 48px top bar, over its right-hand counters and
+// avatar, so the banner never hides the page's own buttons.
 const STYLE = `
   .bar {
-    position: fixed; bottom: 16px; right: 16px; z-index: 2147483647;
-    display: flex; align-items: center; gap: 10px; max-width: 380px;
-    padding: 10px 14px; border-radius: 8px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    position: fixed; top: 4px; right: 8px; z-index: 2147483647;
+    box-sizing: border-box; max-width: 480px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 6px 4px 12px; border-radius: 8px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     background: var(--bg); color: var(--fg);
-    font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font: 13px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   }
   .bar[hidden] { display: none; }
   .icon { font-size: 16px; }
   .text { flex: 1; min-width: 0; }
   .title { font-weight: 600; }
-  .detail { opacity: 0.85; font-size: 12px; margin-top: 2px; }
+  .detail { opacity: 0.85; font-size: 12px; }
   button { font: inherit; cursor: pointer; border: 0; }
-  .now { padding: 6px 10px; border-radius: 6px; font-weight: 600; background: var(--btn-bg); color: var(--btn-fg); }
+  .now { padding: 4px 10px; border-radius: 6px; font-weight: 600; background: var(--btn-bg); color: var(--btn-fg); }
   .dismiss { background: transparent; color: inherit; font-size: 18px; line-height: 1; padding: 0 4px; }
 `;
 
