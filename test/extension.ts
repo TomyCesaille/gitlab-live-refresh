@@ -51,6 +51,7 @@ export function fakeExtensionBrowser(granted: string[] = []) {
     storage: { session: memorySessionArea() },
     tabs: {
       reload: vi.fn(() => Promise.resolve()),
+      query: vi.fn(() => Promise.resolve([] as { id?: number }[])),
       onRemoved: event(),
     },
     alarms: {
@@ -73,6 +74,7 @@ export function fakeExtensionBrowser(granted: string[] = []) {
       ),
       registerContentScripts: vi.fn(() => Promise.resolve()),
       unregisterContentScripts: vi.fn(() => Promise.resolve()),
+      executeScript: vi.fn(() => Promise.resolve([])),
     },
   };
   return { fake, browser: fake as unknown as Browser };

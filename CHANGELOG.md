@@ -30,7 +30,7 @@ The first release.
   GitLab every minute for background tabs, frozen ones included, and reloads a
   tab that changed, unless you left unsent work on it. Tabs on the same page
   share one read. Turn it on per site from its icon: it asks for that one site's
-  permission.
+  permission and starts in that site's open tabs at once.
 - A userscript with the same rules, on the merge request, pipeline and job pages
   of any GitLab host. It updates itself from the latest release.
 - A debug trace across tabs and reloads, behind

@@ -1,5 +1,3 @@
-import type { SitesChanged } from '../messages';
-
 interface Permissions {
   origins: string[];
 }
@@ -17,7 +15,6 @@ export interface PopupApi {
     request(permissions: Permissions): Promise<boolean>;
     remove(permissions: Permissions): Promise<boolean>;
   };
-  runtime: { sendMessage(message: SitesChanged): Promise<unknown> };
 }
 
 // Turns live refresh on or off for the site of the current tab. The button
@@ -50,16 +47,19 @@ export async function startPopup(
   main.append(button);
 
   // The permission request opens before any await, inside the click: Firefox
-  // only grants permissions from a user gesture.
+  // only grants permissions from a user gesture. Firefox may close the popup
+  // behind its prompt, so the background starts live refresh on a grant.
   button.addEventListener('click', () => {
-    const change = on
-      ? api.permissions.remove({ origins })
-      : api.permissions.request({ origins });
-    void change.then(async (changed) => {
-      if (!changed) return;
-      await api.runtime.sendMessage({ type: 'sites' });
-      await api.tabs.reload(tabId);
-      close();
+    if (on) {
+      void api.permissions.remove({ origins }).then(async (removed) => {
+        if (!removed) return;
+        await api.tabs.reload(tabId);
+        close();
+      });
+      return;
+    }
+    void api.permissions.request({ origins }).then((granted) => {
+      if (granted) close();
     });
   });
 }

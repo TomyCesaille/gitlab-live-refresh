@@ -72,11 +72,74 @@ describe('startBackground', () => {
   it('follows the sites you turn on and off', async () => {
     const { fake } = setup();
 
-    fake.permissions.onAdded.fire();
-    fake.permissions.onRemoved.fire();
+    fake.permissions.onAdded.fire({ origins: [SITE] });
+    fake.permissions.onRemoved.fire({ origins: [SITE] });
     await vi.waitFor(() => {
       expect(fake.scripting.registerContentScripts).toHaveBeenCalledTimes(2);
     });
+  });
+
+  it('changes the sites one at a time', async () => {
+    const { fake } = setup();
+    let finishFirst = () => undefined as unknown;
+    fake.scripting.registerContentScripts.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          finishFirst = resolve;
+        }),
+    );
+
+    fake.permissions.onAdded.fire({});
+    fake.permissions.onRemoved.fire({});
+    await vi.waitFor(() => {
+      expect(fake.scripting.registerContentScripts).toHaveBeenCalledOnce();
+    });
+    expect(fake.scripting.getRegisteredContentScripts).toHaveBeenCalledOnce();
+
+    finishFirst();
+    await vi.waitFor(() => {
+      expect(fake.scripting.registerContentScripts).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('keeps following the sites after a change fails', async () => {
+    const { fake } = setup();
+    fake.scripting.registerContentScripts.mockRejectedValueOnce(
+      new Error('registration'),
+    );
+
+    fake.permissions.onRemoved.fire({});
+    fake.permissions.onRemoved.fire({});
+    await vi.waitFor(() => {
+      expect(fake.scripting.registerContentScripts).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('starts live refresh in the open tabs of a site you turn on', async () => {
+    const { fake } = setup();
+    fake.tabs.query.mockResolvedValueOnce([{ id: 4 }, {}, { id: 5 }]);
+    fake.scripting.executeScript.mockRejectedValueOnce(new Error('discarded'));
+
+    fake.permissions.onAdded.fire({ origins: [SITE] });
+    await vi.waitFor(() => {
+      expect(fake.scripting.executeScript).toHaveBeenCalledTimes(2);
+    });
+    expect(fake.tabs.query).toHaveBeenCalledWith({ url: [SITE] });
+    expect(fake.scripting.executeScript).toHaveBeenLastCalledWith({
+      target: { tabId: 5 },
+      files: [CONTENT_SCRIPT_FILE],
+    });
+  });
+
+  it('starts nothing for a grant without a site', async () => {
+    const { fake } = setup();
+
+    fake.permissions.onAdded.fire({});
+    await vi.waitFor(() => {
+      expect(fake.scripting.registerContentScripts).toHaveBeenCalled();
+    });
+    await Promise.resolve();
+    expect(fake.tabs.query).not.toHaveBeenCalled();
   });
 
   it('answers a page with the reply of the background', async () => {
@@ -87,12 +150,6 @@ describe('startBackground', () => {
       `${ORIGIN}/api/v4/projects/g%2Fp/jobs/3`,
       expect.anything(),
     );
-  });
-
-  it('syncs the sites when the popup asks', async () => {
-    const { message } = setup();
-
-    await expect(message({ type: 'sites' }, {})).resolves.toEqual([SITE]);
   });
 
   it('answers null when it fails to handle a message', async () => {

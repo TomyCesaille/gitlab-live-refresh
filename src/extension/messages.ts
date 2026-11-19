@@ -20,11 +20,6 @@ export type ToBackground =
   // The page is about to reload itself.
   | { type: 'reloading'; reason: string; manual: boolean };
 
-// The popup turned live refresh on or off for a site.
-export interface SitesChanged {
-  type: 'sites';
-}
-
 export interface HelloReply {
   reload: ReloadMarker | null;
 }

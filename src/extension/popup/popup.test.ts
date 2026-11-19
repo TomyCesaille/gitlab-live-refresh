@@ -16,7 +16,6 @@ function setup(tab: { id?: number; url?: string } | undefined, on = false) {
       request: vi.fn(() => Promise.resolve(true)),
       remove: vi.fn(() => Promise.resolve(true)),
     },
-    runtime: { sendMessage: vi.fn(() => Promise.resolve([])) },
   } satisfies PopupApi;
   const close = vi.fn();
   return { api, close, start: () => startPopup(document, api, close) };
@@ -43,7 +42,7 @@ describe('startPopup', () => {
     expect(button()).toBeNull();
   });
 
-  it('turns live refresh on for the site, then reloads the tab', async () => {
+  it('turns live refresh on for the site, without reloading the page', async () => {
     const { api, close, start } = setup(gitlabTab);
     await start();
     expect(status()).toBe('Live refresh is off for gitlab.example.com.');
@@ -54,11 +53,10 @@ describe('startPopup', () => {
     await vi.waitFor(() => {
       expect(close).toHaveBeenCalled();
     });
-    expect(api.runtime.sendMessage).toHaveBeenCalledWith({ type: 'sites' });
-    expect(api.tabs.reload).toHaveBeenCalledWith(7);
+    expect(api.tabs.reload).not.toHaveBeenCalled();
   });
 
-  it('turns it off for the site', async () => {
+  it('turns it off for the site, then reloads the tab', async () => {
     const { api, close, start } = setup(gitlabTab, true);
     await start();
     expect(status()).toBe('Live refresh is on for gitlab.example.com.');
@@ -68,6 +66,21 @@ describe('startPopup', () => {
     await vi.waitFor(() => {
       expect(close).toHaveBeenCalled();
     });
+    expect(api.tabs.reload).toHaveBeenCalledWith(7);
+  });
+
+  it('stays on when the site cannot be turned off', async () => {
+    const { api, close, start } = setup(gitlabTab, true);
+    api.permissions.remove.mockResolvedValueOnce(false);
+    await start();
+
+    button()!.click();
+    await vi.waitFor(() => {
+      expect(api.permissions.remove).toHaveBeenCalled();
+    });
+    await Promise.resolve();
+    expect(api.tabs.reload).not.toHaveBeenCalled();
+    expect(close).not.toHaveBeenCalled();
   });
 
   it('stays open when you decline the permission', async () => {
