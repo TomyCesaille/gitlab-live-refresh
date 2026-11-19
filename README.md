@@ -6,8 +6,8 @@ The reload button for GitLab, pressed for you. Merge request, pipeline and job
 pages reload themselves when something changes, never while you type. A browser
 extension for Chrome and Firefox, and a userscript.
 
-[![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=fff)](#install-the-extension)
-[![Firefox](https://img.shields.io/badge/Firefox-MV3-FF7139?logo=firefoxbrowser&logoColor=fff)](#install-the-extension)
+[![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=fff)](https://chromewebstore.google.com/detail/gitlab-live-refresh/ndpjfblhcicehheklmjedjmmpfongaed)
+[![Firefox](https://img.shields.io/badge/Firefox-MV3-FF7139?logo=firefoxbrowser&logoColor=fff)](https://addons.mozilla.org/firefox/addon/gitlab-live-refresh/)
 [![userscript](https://img.shields.io/badge/userscript-Violentmonkey-1f75cb)](#or-the-userscript)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#)
 [![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](CONTRIBUTING.md#check-a-change)
@@ -48,10 +48,9 @@ what changed and reloads the page for you, at a moment that costs you nothing.
 - **Firefox:** add it from
   [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/gitlab-live-refresh/).
   Firefox keeps it up to date.
-- **Chrome:** download the Chrome build from the
-  [latest release](https://github.com/TomyCesaille/gitlab-live-refresh/releases/latest),
-  unzip it, open `chrome://extensions`, turn on Developer mode and choose Load
-  unpacked.
+- **Chrome:** add it from the
+  [Chrome Web Store](https://chromewebstore.google.com/detail/gitlab-live-refresh/ndpjfblhcicehheklmjedjmmpfongaed).
+  Chrome keeps it up to date.
 
 Then open a GitLab page, click the extension's icon and turn live refresh on for
 that site. It asks for that one site's permission, nothing more, starts in that

@@ -89,3 +89,7 @@ Open Graph card and the touch icon, plus the Firefox Add-ons screenshots in
    `FIREFOX_JWT_SECRET`, an addons.mozilla.org API key; without them the step
    is skipped. The manual Store check workflow tests the key without a release:
    it signs in and reads the add-on, and uploads nothing.
+5. Upload the release's Chrome zip to the
+   [Chrome Web Store](https://chromewebstore.google.com/detail/gitlab-live-refresh/ndpjfblhcicehheklmjedjmmpfongaed)
+   from its developer dashboard: Package, Upload new package, then Submit for
+   review.
