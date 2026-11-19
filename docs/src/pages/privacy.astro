@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+const repo = 'https://github.com/TomyCesaille/gitlab-live-refresh';
+---
+
+<Layout
+  title="Privacy -- GitLab Live Refresh"
+  description="GitLab Live Refresh collects no data: it reads the GitLab sites you turn it on for, from your browser, and nothing leaves it."
+>
+  <header class="header">
+    <a class="logo" href={`${base}/`}><img src={`${base}/favicon.svg`} width="28" height="28" alt="" />gitlab-live-refresh</a>
+  </header>
+
+  <h1>Privacy</h1>
+  <p class="lead">GitLab Live Refresh collects no data. This covers the browser extension for Chrome and Firefox and the userscript.</p>
+
+  <section>
+    <h2>What it reads</h2>
+    <p>On the GitLab sites you turn it on for, it reads GitLab's own API (REST and GraphQL, with GET requests only) with the session you already have on that site, to tell whether the page you are looking at changed. These requests go from your browser to that GitLab site, and nowhere else.</p>
+  </section>
+
+  <section>
+    <h2>What it keeps</h2>
+    <ul>
+      <li>Per-tab state, such as what a page looked like at its last check, in the browser's session storage. The browser deletes it when it closes.</li>
+      <li>Your scroll position across a reload, in that tab's session storage on the GitLab site.</li>
+      <li>The debug trace, only if you turn it on yourself, in that GitLab site's local storage. Clearing the site's data removes it.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What it never does</h2>
+    <p>No analytics, no tracking, no ads, no remote code, no server of ours. Nothing is sold, shared or sent to anyone: no data leaves your browser except the reads above, to the GitLab site itself.</p>
+  </section>
+
+  <section>
+    <h2>Permissions</h2>
+    <ul>
+      <li><strong>Access to a site:</strong> asked for one site at a time, when you turn live refresh on for it from the extension's icon. You can turn it off the same way.</li>
+      <li><strong>Scripting:</strong> runs the page side of the extension on the sites you turned on.</li>
+      <li><strong>Storage:</strong> the per-tab state above, in session storage.</li>
+      <li><strong>Alarms:</strong> checks background tabs once a minute.</li>
+      <li><strong>Active tab:</strong> lets the popup read the address of the tab you click it on, to offer that site.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Questions</h2>
+    <p>Open an issue on <a href={`${repo}/issues`}>GitHub</a>. This policy changes only with the code, and its history is in the <a href={`${repo}/commits/main/docs/src/pages/privacy.astro`}>repository</a>.</p>
+  </section>
+</Layout>
+
+<style>
+  .header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-sm);
+  }
+
+  .lead {
+    color: var(--text-muted);
+    margin-bottom: var(--space-2xl);
+  }
+
+  section {
+    margin-bottom: var(--space-xl);
+  }
+
+  h2 {
+    font-size: 20px;
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-sm);
+  }
+
+  ul {
+    padding-left: var(--space-lg);
+  }
+
+  li {
+    margin-bottom: var(--space-xs);
+  }
+</style>

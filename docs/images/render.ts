@@ -1,6 +1,6 @@
 // Draws the website's images from the code: the real banner, in its two
-// colours, the Open Graph card and the Apple touch icon. Also draws the
-// addons.mozilla.org screenshots: the banner on a page, and the popup.
+// colours, the Open Graph card and the Apple touch icon. Also draws the store
+// images: the banner on a page, the popup, and the Chrome Web Store promo tile.
 //
 //   node docs/images/render.ts
 //
@@ -137,8 +137,8 @@ await screenshot(
 );
 await sharp(og).resize(1280, 640).png().toFile(join(publicDir, 'og.png'));
 
-// addons.mozilla.org screenshots, 1280x800 at 1.5x, with the same abstract
-// page: a merge request under GitLab's top bar.
+// Store screenshots, drawn at 2x and scaled to exactly 1280x800, the size the
+// Chrome Web Store takes, on an abstract merge request under GitLab's top bar.
 const store = join(root, 'docs/images/store');
 const mergeRequestPage = `
   <style>
@@ -179,8 +179,7 @@ await screenshot(
    <script>${showBanner}; showBanner('updates', { changes: 'pipeline, comments', why: 'you are typing' });</script>`,
   1280,
   800,
-  join(store, 'banner.png'),
-  1.5,
+  join(work, 'store-banner.png'),
 );
 
 const popupStyle = await readFile(
@@ -209,10 +208,39 @@ await screenshot(
        .replaceAll('"', '&quot;')}"></iframe></div>`,
   1280,
   800,
-  join(store, 'popup.png'),
-  1.5,
+  join(work, 'store-popup.png'),
 );
 
+// The Chrome Web Store's small promo tile, 440x280.
+await screenshot(
+  `<!doctype html><meta charset="utf-8">
+   <style>
+     body { margin: 0; width: 440px; height: 280px; display: flex; align-items: center;
+            gap: 22px; padding: 0 30px; box-sizing: border-box; background: #0d0d0d;
+            color: #e5e5e5; font-family: system-ui, -apple-system, sans-serif; }
+     img { width: 96px; height: 96px; flex: none; }
+     h1 { margin: 0; font: 700 25px/1.15 'SF Mono', Menlo, monospace; color: #fff; }
+     p { margin: 12px 0 0; font-size: 15px; line-height: 1.35; color: #b0b0b0; }
+   </style>
+   <img src="${iconUri}" alt="">
+   <div><h1>GitLab Live Refresh</h1>
+   <p>The reload button for GitLab, pressed for you.</p></div>`,
+  440,
+  280,
+  join(work, 'store-promo.png'),
+);
+
+for (const [name, width, height] of [
+  ['banner', 1280, 800],
+  ['popup', 1280, 800],
+  ['promo', 440, 280],
+] as const) {
+  await sharp(join(work, `store-${name}.png`))
+    .resize(width, height)
+    .png()
+    .toFile(join(store, `${name}.png`));
+}
+
 console.log(
-  'wrote banner.png, apple-touch-icon.png and og.png to docs/public, and the store screenshots to docs/images/store',
+  'wrote banner.png, apple-touch-icon.png and og.png to docs/public, and the store images to docs/images/store',
 );

@@ -130,6 +130,13 @@ and what happened: `poll: pending pipeline, moved pipeline`,
 See [CONTRIBUTING.md](CONTRIBUTING.md), and [AGENTS.md](AGENTS.md) for the
 layout and the rules the code holds to.
 
+## Privacy
+
+It collects no data: it reads the GitLab sites you turn it on for, from your
+browser, and nothing leaves it. The
+[privacy policy](https://tomycesaille.github.io/gitlab-live-refresh/privacy/)
+has the details.
+
 ## License
 
 [MIT](LICENSE). Not affiliated with GitLab Inc.
