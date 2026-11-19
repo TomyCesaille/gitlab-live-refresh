@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { userscriptHeader } from './header';
 
 describe('userscriptHeader', () => {
-  const header = userscriptHeader('2.0.0');
+  const header = userscriptHeader('0.1.0');
   const field = (key: string) =>
     header
       .split('\n')
@@ -17,7 +17,7 @@ describe('userscriptHeader', () => {
   it('keeps the identity Violentmonkey updates the installed copy by', () => {
     expect(field('name')).toEqual(['GitLab Live Refresh']);
     expect(field('namespace')).toEqual(['https://gitlab.com/']);
-    expect(field('version')).toEqual(['2.0.0']);
+    expect(field('version')).toEqual(['0.1.0']);
   });
 
   it('matches merge request, pipeline and job pages on any host', () => {

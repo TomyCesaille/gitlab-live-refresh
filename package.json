@@ -1,6 +1,6 @@
 {
   "name": "gitlab-live-refresh",
-  "version": "2.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "GitLab merge request, pipeline and job pages that reload themselves when something changes, never while you type. A browser extension for Chrome and Firefox, and a userscript.",
   "type": "module",
