@@ -69,7 +69,8 @@ npm run dev
 ```
 
 `node docs/images/render.ts` redraws its images from the code: the banner, the
-Open Graph card and the touch icon. It needs Google Chrome.
+Open Graph card and the touch icon, plus the Firefox Add-ons screenshots in
+`docs/images/store/`. It needs Google Chrome.
 
 ## Releasing
 
