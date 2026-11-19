@@ -2,9 +2,9 @@
 
 # gitlab-live-refresh
 
-F5 for GitLab, done for you. Merge request, pipeline and job pages reload
-themselves when something changes, never while you type. A browser extension for
-Chrome and Firefox, and a userscript.
+The reload button for GitLab, pressed for you. Merge request, pipeline and job
+pages reload themselves when something changes, never while you type. A browser
+extension for Chrome and Firefox, and a userscript.
 
 [![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=fff)](#install-the-extension)
 [![Firefox](https://img.shields.io/badge/Firefox-MV3-FF7139?logo=firefoxbrowser&logoColor=fff)](#install-the-extension)
@@ -22,7 +22,7 @@ Chrome and Firefox, and a userscript.
 
 GitLab's pages are meant to update themselves. Often they do not: a pipeline
 still reads `running` long after it passed, a merge request misses the comment
-that just landed, and you press F5 to find out. gitlab-live-refresh asks GitLab
+that just landed, and you reload to find out. gitlab-live-refresh asks GitLab
 what changed and reloads the page for you, at a moment that costs you nothing.
 
 - **It reloads for what you would reload for:** a pipeline or job status,

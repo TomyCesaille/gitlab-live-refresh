@@ -5,7 +5,7 @@ import type { KeyValueStore } from './storage';
 export interface ReloadMarker {
   url: string;
   at: number;
-  manual: boolean; // a reload you asked for re-arms the error-reload cap, like F5
+  manual: boolean; // a reload you asked for re-arms the error-reload cap, as the browser's does
   reason: string;
 }
 

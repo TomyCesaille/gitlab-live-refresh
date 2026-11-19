@@ -113,7 +113,7 @@ await screenshot(
    </style>
    <img src="data:image/svg+xml;base64,${Buffer.from(icon).toString('base64')}" alt="">
    <div><h1>GitLab Live Refresh</h1>
-   <p>F5 for GitLab, done for you. Pages reload themselves when something changes, never while you type.</p></div>`,
+   <p>The reload button for GitLab, pressed for you. Pages reload themselves when something changes, never while you type.</p></div>`,
   1280,
   640,
   og,
