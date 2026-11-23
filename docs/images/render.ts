@@ -137,49 +137,50 @@ await screenshot(
 );
 await sharp(og).resize(1280, 640).png().toFile(join(publicDir, 'og.png'));
 
-// Store screenshots, drawn at 2x and scaled to exactly 1280x800, the size the
-// Chrome Web Store takes, on an abstract merge request under GitLab's top bar.
+// Store screenshots, 1280x800, the size the Chrome Web Store takes. The stores
+// show them about 600px wide, so each is a close-up: the top right corner of an
+// abstract merge request, 512x320 at 2.5x, where the banner and the popup read
+// at their real size.
 const store = join(root, 'docs/images/store');
+const STORE_WIDTH = 512;
+const STORE_HEIGHT = 320;
+const STORE_SCALE = 1280 / STORE_WIDTH;
 const mergeRequestPage = `
   <style>
     body { margin: 0; background: #fafafa; font: 13px system-ui; }
-    .top { height: 48px; display: flex; align-items: center; gap: 14px; padding: 0 16px;
+    .top { height: 48px; display: flex; align-items: center; gap: 12px; padding: 0 14px;
            background: #ececec; border-bottom: 1px solid #d6d6d6; }
-    .logo { width: 24px; height: 24px; border-radius: 6px; background: #c8c8c8; }
-    .search { width: 380px; height: 30px; border-radius: 15px; background: #fff; }
-    .side { position: fixed; top: 49px; bottom: 0; left: 0; width: 220px; padding: 18px 0;
-            background: #f1f1f1; border-right: 1px solid #e0e0e0; }
-    .main { margin-left: 220px; padding: 26px 40px; }
-    .row { height: 10px; margin: 0 0 16px; border-radius: 5px; background: #dedede; }
-    .side .row { margin: 0 18px 18px; }
-    .title { height: 22px; width: 58%; margin: 6px 0 18px; border-radius: 6px; background: #cfcfcf; }
-    .tabs { display: flex; gap: 22px; margin: 26px 0 22px; padding-bottom: 12px;
+    .logo { width: 24px; height: 24px; border-radius: 6px; background: #c8c8c8; flex: none; }
+    .search { width: 110px; height: 28px; border-radius: 14px; background: #fff; }
+    .main { padding: 22px 24px; }
+    .row { height: 9px; margin: 0 0 14px; border-radius: 5px; background: #dedede; }
+    .title { height: 20px; width: 62%; margin: 4px 0 16px; border-radius: 6px; background: #cfcfcf; }
+    .tabs { display: flex; gap: 18px; margin: 20px 0 18px; padding-bottom: 10px;
             border-bottom: 1px solid #e0e0e0; }
-    .tabs div { width: 80px; height: 10px; border-radius: 5px; background: #d6d6d6; }
-    .card { padding: 18px; margin-bottom: 18px; border: 1px solid #e3e3e3; border-radius: 8px;
-            background: #fff; display: flex; align-items: center; gap: 14px; }
-    .pill { width: 74px; height: 22px; border-radius: 11px; flex: none; }
+    .tabs div { width: 64px; height: 9px; border-radius: 5px; background: #d6d6d6; }
+    .card { padding: 14px; margin-bottom: 14px; border: 1px solid #e3e3e3; border-radius: 8px;
+            background: #fff; display: flex; align-items: center; gap: 12px; }
+    .pill { width: 64px; height: 20px; border-radius: 10px; flex: none; }
     .pass { background: #c3e6cb; } .run { background: #bcd7f5; }
     .card .row { flex: 1; margin: 0; }
     .w30 { width: 30%; } .w45 { width: 45%; } .w60 { width: 60%; } .w80 { width: 80%; }
   </style>
   <div class="top"><div class="logo"></div><div class="search"></div></div>
-  <div class="side">${'<div class="row"></div>'.repeat(9)}</div>
   <div class="main">
     <div class="row w30"></div><div class="title"></div><div class="row w45"></div>
     <div class="tabs"><div></div><div></div><div></div><div></div></div>
     <div class="card"><div class="pill pass"></div><div class="row"></div></div>
     <div class="card"><div class="pill run"></div><div class="row"></div></div>
     <div class="row w80"></div><div class="row w60"></div><div class="row"></div>
-    <div class="row w45"></div><div class="row w80"></div><div class="row w60"></div>
   </div>`;
 
 await screenshot(
   `<!doctype html><meta charset="utf-8">${mergeRequestPage}
    <script>${showBanner}; showBanner('updates', { changes: 'pipeline, comments', why: 'you are typing' });</script>`,
-  1280,
-  800,
+  STORE_WIDTH,
+  STORE_HEIGHT,
   join(work, 'store-banner.png'),
+  STORE_SCALE,
 );
 
 const popupStyle = await readFile(
@@ -191,7 +192,7 @@ await screenshot(
   `<!doctype html><meta charset="utf-8">
    <style>
      .toolbar { height: 40px; display: flex; align-items: center; justify-content: flex-end;
-                gap: 16px; padding: 0 18px; background: #dcdcdc; border-bottom: 1px solid #c8c8c8; }
+                gap: 14px; padding: 0 14px; background: #dcdcdc; border-bottom: 1px solid #c8c8c8; }
      .toolbar .url { flex: 1; height: 26px; border-radius: 13px; background: #f4f4f4; }
      .toolbar img { width: 20px; height: 20px; }
      .popup { position: fixed; top: 46px; right: 8px; border-radius: 8px; overflow: hidden;
@@ -199,16 +200,17 @@ await screenshot(
      .popup iframe { display: block; width: 332px; height: 136px; border: 0; }
    </style>
    <div class="toolbar"><div class="url"></div><img src="${iconUri}" alt=""></div>
-   ${mergeRequestPage.replace('top: 49px', 'top: 90px')}
+   ${mergeRequestPage}
    <div class="popup"><iframe srcdoc="${`<!doctype html><meta charset='utf-8'>
      <style>${popupStyle}</style>
      <header><img src='${iconUri}' alt='' width='20' height='20'><h1>GitLab Live Refresh</h1></header>
      <script>${showPopup}</script>`
        .replaceAll('&', '&amp;')
        .replaceAll('"', '&quot;')}"></iframe></div>`,
-  1280,
-  800,
+  STORE_WIDTH,
+  STORE_HEIGHT,
   join(work, 'store-popup.png'),
+  STORE_SCALE,
 );
 
 // The Chrome Web Store's small promo tile, 440x280.
