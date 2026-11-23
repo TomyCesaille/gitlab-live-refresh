@@ -6,8 +6,8 @@ The reload button for GitLab, pressed for you. Merge request, pipeline and job
 pages reload themselves when something changes, never while you type. A browser
 extension for Chrome and Firefox, and a userscript.
 
-[![Chrome](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=fff)](https://chromewebstore.google.com/detail/gitlab-live-refresh/ndpjfblhcicehheklmjedjmmpfongaed)
-[![Firefox](https://img.shields.io/badge/Firefox-MV3-FF7139?logo=firefoxbrowser&logoColor=fff)](https://addons.mozilla.org/firefox/addon/gitlab-live-refresh/)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ndpjfblhcicehheklmjedjmmpfongaed?logo=googlechrome&logoColor=fff&label=Chrome&color=4285F4)](https://chromewebstore.google.com/detail/gitlab-live-refresh/ndpjfblhcicehheklmjedjmmpfongaed)
+[![Firefox Add-ons](https://img.shields.io/amo/v/gitlab-live-refresh?logo=firefoxbrowser&logoColor=fff&label=Firefox&color=FF7139)](https://addons.mozilla.org/firefox/addon/gitlab-live-refresh/)
 [![userscript](https://img.shields.io/badge/userscript-Violentmonkey-1f75cb)](#or-the-userscript)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#)
 [![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](CONTRIBUTING.md#check-a-change)
